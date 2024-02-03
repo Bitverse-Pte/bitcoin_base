@@ -8,14 +8,14 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import '../example_service.dart';
 
 void main() {
-  _createP2TRRawTransaction();
+  // _createP2TRRawTransaction();
   // _generateP2TRWithPrivateKey();
-  // _generateP2TRWithMnemonic();
+  _generateP2TRWithMnemonic();
   // _generateP2TRWithPublicKey();
 }
 
 void _generateP2TRWithPublicKey() {
-  String publicKey = "04eda19b92261471cb117594f48822e71bb84d05b88190545663fafebbbb0823dd4b8f032483dcbb43e29b0f30b64f6b6eb5c0f75734f73f56375cb3e6f70bd0a7";
+  String publicKey = "";
   ECPublic ecPublic = ECPublic.fromHex(publicKey);
 
   // final bip32 = Bip32Slip10Secp256k1.fromPublicKey(ecPublic.publicKey.compressed);
@@ -32,7 +32,7 @@ void _generateP2TRWithPublicKey() {
 }
 
 void _generateP2TRWithPrivateKey() {
-  final ECPrivate ecPrivate = ECPrivate.fromWif('Kxq2up1S17tSva2Bh1wDHwtZenzmnvWMM6qE9oFsWwP8T42SvYDR',
+  final ECPrivate ecPrivate = ECPrivate.fromWif('',
       netVersion: BitcoinNetwork.mainnet.wifNetVer);
 
   // String privateKey = "0xaaf38cc130d216eb38646ff7a237a4a7a86e970f44b51ec11bbb4aa5fb96eebe";
@@ -42,8 +42,8 @@ void _generateP2TRWithPrivateKey() {
   final bip32 = Bip32Slip10Secp256k1.fromPrivateKey(ecPrivate.prive.raw);
 
   /// i generate 4 HD wallet for this test and now i have access to private and pulic key of each wallet
-  final p2trDerivePath = bip32.derivePath("m/86'/0'/0'/0/0");
-  final p2wpkhDerivePath = bip32.derivePath("m/44'/0'/0'/0/0");
+  final p2trDerivePath = bip32.derivePath("m/86'/1'/0'/0/0");
+  final p2wpkhDerivePath = bip32.derivePath("m/44'/1'/0'/0/0");
 
   /// access to private key `ECPrivate`
   final p2trPrivateKey = ECPrivate.fromBytes(p2trDerivePath.privateKey.raw);
@@ -73,15 +73,19 @@ void _generateP2TRWithMnemonic() {
   print(bip32.publicKey.toHex());
   print('--------------');
 
-  print('--------------private key-----------');
+  print('--------------private key hex-----------');
   print(bip32.privateKey.toHex());
   print('--------------');
 
   /// i generate 4 HD wallet for this test and now i have access to private and pulic key of each wallet
-  final p2trDerivePath = bip32.derivePath("m/86'/0'/0'/0/0");
+  final p2trDerivePath = bip32.derivePath("m/86'/1'/0'/0/0");
 
   /// access to private key `ECPrivate`
   final p2trPrivateKey = ECPrivate.fromBytes(p2trDerivePath.privateKey.raw);
+
+  print('--------------p2tr private key wif and fingerprint-----------');
+  print(p2trPrivateKey.toWif());
+  print('--------------');
 
   /// access to public key `ECPublic`
   final p2trPublicKey = p2trPrivateKey.getPublic();
@@ -93,6 +97,8 @@ void _generateP2TRWithMnemonic() {
   /// P2TR
   final p2trAddress = p2trPublicKey.toTaprootAddress();
   print(p2trAddress.toAddress(BitcoinNetwork.testnet));
+
+  print("done");
 }
 
 void _createP2TRRawTransaction() async {
@@ -111,24 +117,26 @@ void _createP2TRRawTransaction() async {
   final bip32 = Bip32Slip10Secp256k1.fromSeed(mnemonic);
 
   /// i generate 4 HD wallet for this test and now i have access to private and pulic key of each wallet
-  final p2trDerivePath = bip32.derivePath("m/86'/0'/0'/0/0");
-  final p2wpkhDerivePath = bip32.derivePath("m/44'/0'/0'/0/0");
+  final p2trDerivePath = bip32.derivePath("m/86'/1'/0'/0/0");
+  // final p2wpkhDerivePath = bip32.derivePath("m/44'/0'/0'/0/0");
 
   /// access to private key `ECPrivate`
   final p2trPrivateKey = ECPrivate.fromBytes(p2trDerivePath.privateKey.raw);
-  final p2wpkhPrivateKey = ECPrivate.fromBytes(p2wpkhDerivePath.privateKey.raw);
+  // final p2wpkhPrivateKey = ECPrivate.fromBytes(p2wpkhDerivePath.privateKey.raw);
 
   /// access to public key `ECPublic`
   final p2trPublicKey = p2trPrivateKey.getPublic();
-  final p2wpkhPublicKey = p2wpkhPrivateKey.getPublic();
+  // final p2wpkhPublicKey = p2wpkhPrivateKey.getPublic();
 
   /// P2TR
   final p2trAddress = p2trPublicKey.toTaprootAddress();
   print(p2trAddress.toAddress(BitcoinNetwork.testnet));
 
   /// P2WPKH
-  final p2wpkhAddress = p2wpkhPublicKey.toSegwitAddress();
-  print(p2wpkhAddress.toAddress(BitcoinNetwork.testnet));
+  // final p2wpkhAddress = p2wpkhPublicKey.toSegwitAddress();
+  // print(p2wpkhAddress.toAddress(BitcoinNetwork.testnet));
+
+  final p2wpkhAddress = P2wpkhAddress.fromAddress(address: "tb1qst7p2q2kz94tuvnx0gu34mqe99lcfrjhc6shr0", network: network);
 
   /// Spending List
   /// i use some different address type for this
@@ -211,7 +219,7 @@ void _createP2TRRawTransaction() async {
     network: network,
 // If you like the note write something else and leave it blank
 // I will put my GitHub address here
-    memo: "https://github.com/mrtnetwork",
+//     memo: "https://github.com/mrtnetwork",
 /*
 		RBF, or Replace-By-Fee, is a feature in Bitcoin that allows you to increase the fee of an unconfirmed
 		transaction that you've broadcasted to the network.
@@ -234,7 +242,7 @@ void _createP2TRRawTransaction() async {
     if (utxo.utxo.isP2tr()) {
       return p2trPrivateKey.signTapRoot(trDigest);
     } else {
-      return p2wpkhPrivateKey.signInput(trDigest, sigHash: sighash);
+      return p2trPrivateKey.signInput(trDigest, sigHash: sighash);
     }
   });
 
@@ -242,6 +250,7 @@ void _createP2TRRawTransaction() async {
   /// You can determine the transaction fee by multiplying the transaction size
   /// Formula: transaction fee = (transaction size in bytes * fee rate in bytes)
   final size = tr.hasSegwit ? tr.getVSize() : tr.getSize();
+
 
   /// broadcast transaction
   /// https://mempool.space/testnet/tx/05411dce1a1c9e3f44b54413bdf71e7ab3eff1e2f94818a3568c39814c27b258
