@@ -121,19 +121,19 @@ void main() async {
     memo: null,
     utxos: utxos,
   );
-  final transaaction =
-      bchTransaction.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final transaction =
+      await bchTransaction.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     return privateKey.signInput(trDigest, sigHash: sighash);
   });
 
   /// transaction ID
-  transaaction.txId();
+  transaction.txId();
 
   /// for calculation fee
-  transaaction.getSize();
+  transaction.getSize();
 
   /// raw of encoded transaction in hex
-  final transactionRaw = transaaction.toHex();
+  final transactionRaw = transaction.toHex();
 
   /// send transaction to network
   await provider

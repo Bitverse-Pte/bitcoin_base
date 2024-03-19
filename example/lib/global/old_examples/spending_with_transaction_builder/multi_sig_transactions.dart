@@ -146,7 +146,7 @@ void main() async {
   // the transaction size may vary. We consider the maximum amount for each transaction in the fake transaction.
   // In any case, the size of each input amount is 8 bytes
   // I have created a method for accomplishing this.
-  int size = BitcoinTransactionBuilder.estimateTransactionSize(
+  int size = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxos,
       outputs: [
         BitcoinOutput(
@@ -235,7 +235,7 @@ void main() async {
   // This method sends you the public key for each UTXO,
   // allowing you to sign the desired input with the associated private key
   final transaction =
-      transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+      await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     late ECPrivate key;
 
     // ok we have the public key of the current UTXO and we use some conditions to find private  key and sign transaction

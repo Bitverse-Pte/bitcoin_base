@@ -59,7 +59,7 @@ Future<void> spendingP2WPKH(ECPrivate sWallet, ECPrivate rWallet) async {
   // To achieve this, we create a dummy transaction with specified inputs and outputs
   // to obtain the actual transaction size in bytes.
   // The `estimateTransactionSize` method of the `BitcoinTransactionBuilder` class does this for us
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
 
   // Now that we've determined the transaction size, let's calculate the transaction fee
@@ -131,7 +131,7 @@ Future<void> spendingP2WSH(ECPrivate sWallet, ECPrivate rWallet) async {
     BitcoinOutput(address: receiver, value: BigInt.zero),
     BitcoinOutput(address: changeAddress, value: BigInt.zero)
   ];
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
   final estimateFee = feeRate.getEstimate(transactionSize,
       feeRateType: BitcoinFeeRateType.medium);
@@ -179,7 +179,7 @@ Future<void> spendingP2PKH(ECPrivate sWallet, ECPrivate rWallet) async {
     BitcoinOutput(address: receiver, value: BigInt.zero),
     BitcoinOutput(address: changeAddress, value: BigInt.zero)
   ];
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
   final estimateFee = feeRate.getEstimate(transactionSize,
       feeRateType: BitcoinFeeRateType.medium);
@@ -231,7 +231,7 @@ Future<void> spendingP2SHNoneSegwit(
     BitcoinOutput(address: receiver, value: BigInt.zero),
     BitcoinOutput(address: changeAddress, value: BigInt.zero)
   ];
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
   final estimateFee = feeRate.getEstimate(transactionSize,
       feeRateType: BitcoinFeeRateType.medium);
@@ -282,7 +282,7 @@ Future<void> spendingP2shSegwit(ECPrivate sWallet, ECPrivate rWallet) async {
     BitcoinOutput(address: receiver, value: BigInt.zero),
     BitcoinOutput(address: changeAddress, value: BigInt.zero)
   ];
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
   final estimateFee = feeRate.getEstimate(transactionSize,
       feeRateType: BitcoinFeeRateType.medium);
@@ -333,7 +333,7 @@ Future<void> spendingP2TR(ECPrivate sWallet, ECPrivate rWallet) async {
     BitcoinOutput(address: receiver, value: BigInt.zero),
     BitcoinOutput(address: changeAddress, value: BigInt.zero)
   ];
-  final transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  final transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: utxo, outputs: outputsAdress, network: network);
   final estimateFee = feeRate.getEstimate(transactionSize,
       feeRateType: BitcoinFeeRateType.medium);

@@ -2,7 +2,7 @@ import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 
 /// A versatile transaction builder designed to support various plugin-supported networks
-/// other than Bitcoin Cash (BCH) and Bitcoin SV (BSV). Implements [BasedBitcoinTransacationBuilder]
+/// other than Bitcoin Cash (BCH) and Bitcoin SV (BSV). Implements [BasedBitcoinTransactionBuilder]
 /// interface for creating and validating transactions across different Bitcoin-based networks.
 ///
 /// The [BitcoinTransactionBuilder] constructs transactions with specified outputs, fees, and additional parameters
@@ -20,7 +20,7 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 /// - [outputOrdering]: Ordering preference for transaction outputs. Default is BIP-69.
 ///
 /// Note: The constructor automatically validates the builder by calling the [_validateBuilder] method.
-class BitcoinTransactionBuilder implements BasedBitcoinTransacationBuilder {
+class BitcoinTransactionBuilder implements BasedBitcoinTransactionBuilder {
   final List<BitcoinBaseOutput> outPuts;
   final BigInt fee;
   final BasedUtxoNetwork network;
@@ -72,12 +72,12 @@ class BitcoinTransactionBuilder implements BasedBitcoinTransacationBuilder {
   /// This method is used to create a dummy transaction,
   /// allowing us to obtain the size of the original transaction
   /// before conducting the actual transaction. This helps us estimate the transaction cost
-  static int estimateTransactionSize(
+  static Future<int> estimateTransactionSize(
       {required List<UtxoWithAddress> utxos,
       required List<BitcoinBaseOutput> outputs,
       required BasedUtxoNetwork network,
       String? memo,
-      bool enableRBF = false}) {
+      bool enableRBF = false}) async {
     final transactionBuilder = BitcoinTransactionBuilder(
       /// Now, we provide the UTXOs we want to spend.
       utxos: utxos,
@@ -119,8 +119,8 @@ class BitcoinTransactionBuilder implements BasedBitcoinTransacationBuilder {
     const String fakeECDSASignatureBytes =
         "0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101";
 
-    final transaction = transactionBuilder
-        .buildTransaction((trDigest, utxo, multiSigPublicKey, int sighash) {
+    final transaction = await transactionBuilder
+        .buildTransaction((trDigest, utxo, multiSigPublicKey, int sighash) async {
       if (utxo.utxo.isP2tr()) {
         return fakeSchnorSignaturBytes;
       } else {
@@ -464,7 +464,7 @@ that demonstrate the right to spend the bitcoins associated with the correspondi
   }
 
   @override
-  BtcTransaction buildTransaction(BitcoinSignerCallBack sign) {
+  Future<BtcTransaction> buildTransaction(BitcoinSignerCallBack sign) async {
     /// build inputs
     final sortedInputs = _buildInputs();
 
@@ -533,7 +533,7 @@ that demonstrate the right to spend the bitcoins associated with the correspondi
             ownerIndex < multiSigAddress.signers.length;
             ownerIndex++) {
           /// now we need sign the transaction digest
-          final sig = sign(digest, utxos[i],
+          final sig = await sign(digest, utxos[i],
               multiSigAddress.signers[ownerIndex].publicKey, sighash);
           if (sig.isEmpty) continue;
           for (int weight = 0;
@@ -562,7 +562,7 @@ that demonstrate the right to spend the bitcoins associated with the correspondi
       }
 
       /// now we need sign the transaction digest
-      final sig = sign(digest, utxos[i], utxos[i].public().toHex(), sighash);
+      final sig = await sign(digest, utxos[i], utxos[i].public().toHex(), sighash);
       _addUnlockScriptScript(
           hasSegwit: hasSegwit,
           input: inputs[i],

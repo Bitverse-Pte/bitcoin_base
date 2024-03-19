@@ -89,7 +89,7 @@ void _createP2TRRawTransaction() async {
   final restAmount = sumOfUtxo.toInt() - 2000;
   final p2trChangeAddress = BitcoinOutput(address: p2trAddress, value: BigInt.from(restAmount));
 
-  int size = BitcoinTransactionBuilder.estimateTransactionSize(
+  int size = await BitcoinTransactionBuilder.estimateTransactionSize(
     utxos: utxos,
     outputs: [
       p2wpkhOutput,

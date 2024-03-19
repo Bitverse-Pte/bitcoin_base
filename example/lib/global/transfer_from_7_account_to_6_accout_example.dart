@@ -101,7 +101,7 @@ void main() async {
       BigInt.zero, (previousValue, element) => previousValue + element.value);
 
   /// Estimate transaction size
-  int transactionSize = BitcoinTransactionBuilder.estimateTransactionSize(
+  int transactionSize = await BitcoinTransactionBuilder.estimateTransactionSize(
       utxos: accountsUtxos,
       outputs: [
         ...outPuts,
@@ -152,7 +152,7 @@ void main() async {
 
   /// create transaction and sign it
   final transaction =
-      builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+      await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     if (utxo.utxo.isP2tr()) {
       return privateKey.signTapRoot(trDigest, sighash: sighash);
     }

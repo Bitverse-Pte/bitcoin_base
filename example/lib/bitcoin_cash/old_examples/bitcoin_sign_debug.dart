@@ -81,7 +81,7 @@ void _createP2TRRawTransaction() async {
     enableRBF: true,
   );
 
-  final tr = transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     if (utxo.utxo.isP2tr()) {
       return p2trPrivateKey.signTapRoot(trDigest);
     } else {

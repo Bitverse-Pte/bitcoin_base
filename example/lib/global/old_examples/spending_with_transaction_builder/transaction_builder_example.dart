@@ -185,7 +185,7 @@ void main() async {
   // utxo  infos with owner details
   // trDigest transaction digest of current UTXO (must be sign with correct privateKey)
   final transaction =
-      transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+      await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     late ECPrivate key;
 
     // ok we have the public key of the current UTXO and we use some conditions to find private  key and sign transaction

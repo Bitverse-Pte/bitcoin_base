@@ -148,7 +148,7 @@ void _spendFrom2P2SHAnd2P2PKHAddress() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the ForkedTransactionBuilder
-  final tr = b.buildTransaction((trDigest, utxo, publicKey, int sighash) {
+  final tr = await b.buildTransaction((trDigest, utxo, publicKey, int sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == childKey1PublicKey.toHex()) {
@@ -351,7 +351,7 @@ void _spendFrom2P2SHAnd1P2PKHAddress() async {
             ownerDetails: UtxoAddressDetails.multiSigAddress(
                 multiSigAddress: msig2, address: msig2.toP2shAddress())),
       ]);
-  final tr = b.buildTransaction((trDigest, utxo, publicKey, int sighash) {
+  final tr = await b.buildTransaction((trDigest, utxo, publicKey, int sighash) async {
     if (publicKey == childKey1PublicKey.toHex()) {
       return childKey1PrivateKey.signInput(trDigest, sigHash: sighash);
     }

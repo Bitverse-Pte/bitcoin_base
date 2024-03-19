@@ -127,7 +127,7 @@ void _spendFrom3P2shAddress() async {
                 publicKey: childKey1PublicKey.toHex(),
                 address: childKey1PublicKey.toAddress())),
       ]);
-  final tr = builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     if (publicKey == childKey1PublicKey.toHex()) {
       return childKey1PrivateKey.signInput(trDigest, sigHash: sighash);
     }
@@ -276,7 +276,7 @@ void _spendFromP2pkhAndP2sh() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = b.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await b.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == childKey1PublicKey.toHex()) {

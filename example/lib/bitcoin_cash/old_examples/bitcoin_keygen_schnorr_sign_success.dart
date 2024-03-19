@@ -4,13 +4,12 @@ import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:bitcoin_base/src/utils/btc_utils.dart';
 import 'package:blockchain_utils/bip/mnemonic/mnemonic.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
-
 import 'package:example/services_examples/explorer_service/explorer_service.dart';
 
-void main() {
-  // _createP2TRRawTransaction();
+void main() async {
+  await _createP2TRRawTransaction();
   // _generateP2TRWithPrivateKey();
-  _generateP2TRWithMnemonic();
+  // _generateP2TRWithMnemonic();
   // _generateP2TRWithPublicKey();
 }
 
@@ -32,8 +31,9 @@ void _generateP2TRWithPublicKey() {
 }
 
 void _generateP2TRWithPrivateKey() {
-  final ECPrivate ecPrivate = ECPrivate.fromWif('',
-      netVersion: BitcoinNetwork.mainnet.wifNetVer);
+  final ECPrivate ecPrivate = ECPrivate.fromWif('cRsNmeBydBoFmUqbiWoRBXBRT6rvR9A5y5JBuN3mirqHBpLFJmAM', netVersion: BitcoinNetwork.testnet.wifNetVer);
+
+  // final ECPrivate ecPrivate = ECPrivate.fromHex("9312685b26a32e7c9c8ec97c09c5d24485c027accdd56e2db22e4cde56505ecd");
 
   // String privateKey = "0xaaf38cc130d216eb38646ff7a237a4a7a86e970f44b51ec11bbb4aa5fb96eebe";
   // String key = WifEncoder.encode(BytesUtils.fromHexString(privateKey), netVer: BitcoinNetwork.mainnet.wifNetVer, pubKeyMode: WifPubKeyModes.compressed);
@@ -42,8 +42,8 @@ void _generateP2TRWithPrivateKey() {
   final bip32 = Bip32Slip10Secp256k1.fromPrivateKey(ecPrivate.prive.raw);
 
   /// i generate 4 HD wallet for this test and now i have access to private and pulic key of each wallet
-  final p2trDerivePath = bip32.derivePath("m/86'/1'/0'/0/0");
-  final p2wpkhDerivePath = bip32.derivePath("m/44'/1'/0'/0/0");
+  final p2trDerivePath = bip32.derivePath("m/86'/0'/0'/0/0");
+  final p2wpkhDerivePath = bip32.derivePath("m/44'/0'/0'/0/0");
 
   /// access to private key `ECPrivate`
   final p2trPrivateKey = ECPrivate.fromBytes(p2trDerivePath.privateKey.raw);
@@ -55,16 +55,21 @@ void _generateP2TRWithPrivateKey() {
 
   /// P2TR
   final p2trAddress = p2trPublicKey.toTaprootAddress();
-  print(p2trAddress.toAddress(BitcoinNetwork.mainnet));
+  print("Taproot=======================================");
+  print(p2trAddress.toAddress(BitcoinNetwork.testnet));
+
+  print(ecPrivate.getPublic().toTaprootAddress().toAddress(BitcoinNetwork.testnet));
 
   /// P2WPKH
   final p2wpkhAddress = p2wpkhPublicKey.toSegwitAddress();
-  print(p2wpkhAddress.toAddress(BitcoinNetwork.mainnet));
+  print("P2WPKH=======================================");
+  print(p2wpkhAddress.toAddress(BitcoinNetwork.testnet));
+
 }
 
 void _generateP2TRWithMnemonic() {
   final mnemonic = Bip39SeedGenerator(
-      Mnemonic.fromString(""))
+      Mnemonic.fromString("gasp become thing view slow uncover derive private media bounce lunch network"))
       .generate();
 
   final bip32 = Bip32Slip10Secp256k1.fromSeed(mnemonic);
@@ -78,7 +83,7 @@ void _generateP2TRWithMnemonic() {
   print('--------------');
 
   /// i generate 4 HD wallet for this test and now i have access to private and pulic key of each wallet
-  final p2trDerivePath = bip32.derivePath("m/86'/1'/0'/0/0");
+  final p2trDerivePath = bip32.derivePath("m/86'/0'/0'/0/0");
 
   /// access to private key `ECPrivate`
   final p2trPrivateKey = ECPrivate.fromBytes(p2trDerivePath.privateKey.raw);
@@ -101,7 +106,7 @@ void _generateP2TRWithMnemonic() {
   print("done");
 }
 
-void _createP2TRRawTransaction() async {
+Future<void> _createP2TRRawTransaction() async {
   /// select network
   const BitcoinNetwork network = BitcoinNetwork.testnet;
   final service = BitcoinApiService();
@@ -111,7 +116,7 @@ void _createP2TRRawTransaction() async {
   final api = ApiProvider.fromMempool(network, service);
 
   final mnemonic = Bip39SeedGenerator(
-      Mnemonic.fromString(""))
+      Mnemonic.fromString("gasp become thing view slow uncover derive private media bounce lunch network"))
       .generate();
 
   final bip32 = Bip32Slip10Secp256k1.fromSeed(mnemonic);
@@ -236,7 +241,7 @@ void _createP2TRRawTransaction() async {
   /// utxo  infos with owner details
   /// trDigest transaction digest of current UTXO (must be sign with correct privateKey)
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (utxo.utxo.isP2tr()) {

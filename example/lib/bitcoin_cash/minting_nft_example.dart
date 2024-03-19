@@ -164,7 +164,7 @@ void main() async {
     utxos: utxos,
   );
   final transaaction =
-      bchTransaction.buildTransaction((trDigest, utxo, publicKey, sighash) {
+      await bchTransaction.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     return privateKey.signInput(trDigest, sigHash: sighash);
   });
 

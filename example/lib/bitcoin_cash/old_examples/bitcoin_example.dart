@@ -161,7 +161,7 @@ void _spendFromP2pkhTo10DifferentType() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
 
@@ -396,7 +396,7 @@ void _spendFrom10DifferentTypeToP2pkh() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = builder.buildTransaction((trDigest, utxo, publicKey, sighash) {
+  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == childKey1PublicKey.toHex()) {

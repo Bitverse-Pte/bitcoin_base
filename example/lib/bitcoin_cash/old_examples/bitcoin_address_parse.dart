@@ -7,12 +7,17 @@ void main() {
   print(addressA);
   print(addressB?.type.value);
   print(addressB?.type == BitcoinAddressType.fromValue("P2WPKH"));
+  print(addressB?.type == SegwitAddresType.p2wpkh);
 
   final addressC = fromAddress(
       address: "tb1p2zg7n92d5a3g5zem0axqe8s99kw57fart4a9usa7p8n0kl0crwvsyslk2a", network: BitcoinNetwork.testnet);
   print(addressC?.type.value);
+
   print(addressC?.type == BitcoinAddressType.fromValue("P2WPKH"));
+  print(addressC?.type == SegwitAddresType.p2wpkh);
+
   print(addressC?.type == BitcoinAddressType.fromValue("P2TR"));
+  print(addressC?.type == SegwitAddresType.p2tr);
 }
 
 /// 获取钱包地址
