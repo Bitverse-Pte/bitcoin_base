@@ -7,14 +7,14 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:example/services_examples/explorer_service/explorer_service.dart';
 
 void main() async {
-  await _createP2TRRawTransaction();
+  // await _createP2TRRawTransaction();
   // _generateP2TRWithPrivateKey();
   // _generateP2TRWithMnemonic();
-  // _generateP2TRWithPublicKey();
+  _generateP2TRWithPublicKey();
 }
 
 void _generateP2TRWithPublicKey() {
-  String publicKey = "";
+  String publicKey = "030abc288c28ebf43e81b9fcb4bd9f8542342d8984db9cb466e87bcf5931fdd609";
   ECPublic ecPublic = ECPublic.fromHex(publicKey);
 
   // final bip32 = Bip32Slip10Secp256k1.fromPublicKey(ecPublic.publicKey.compressed);
@@ -27,6 +27,7 @@ void _generateP2TRWithPublicKey() {
 
   /// P2TR
   final p2trAddress = ecPublic.toTaprootAddress();
+  print(p2trAddress.toAddress(BitcoinNetwork.mainnet));
   print(p2trAddress.toAddress(BitcoinNetwork.testnet));
 }
 
