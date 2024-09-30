@@ -1,4 +1,41 @@
-# 4.0.0
+## 4.7.0
+
+* Update dependencies
+
+## 4.6.0
+
+* add asyncTransactionBuilder method to support building transactions asynchronously.
+
+## 4.5.0
+
+* Added support for Pepecoin network
+* Update dependencies
+
+## 4.4.0
+
+* Update dependencies
+
+## 4.3.0
+
+* Update dependencies
+
+## 4.2.2
+
+* Added hourFee and economyFee to mempool api getNetworkFeeRate method
+
+## 4.2.1
+
+* Update dependencies
+
+## 4.2.0
+
+* Update dependencies
+
+## 4.1.0
+
+* Update dependencies
+
+## 4.0.0
 
 * Added support for BitcoinSV network
 * Introduced classes for improved network address handling
@@ -47,22 +84,18 @@
 * Remove all dependencies except `blockchain_utils`  
 * Change AddressType to BitcoinAddressType
 
-
 ## 1.1.0
 
 * Update dependencies
-
 
 ## 1.0.0
 
 * TransactionBuilder
 * Fix bugs
 
-
 ## 0.5.0
 
 * Fix p2sh(segwit)
-
 
 ## 0.4.0
 
@@ -70,14 +103,11 @@
 * add hdwallet
 * add new bitcoin address types p2sh(segwit)
 
-
 ## 0.2.0
 
 * commands for methods, better understanding
 * add lints package to dependencies
 
-
 ## 0.1.0
 
 * TODO: Release.
-

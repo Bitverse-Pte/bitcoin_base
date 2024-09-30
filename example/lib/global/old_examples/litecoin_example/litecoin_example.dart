@@ -124,7 +124,7 @@ void _spendLTCP2pkhAddress() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+  final tr = await builder.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == pub.toHex()) {
@@ -264,7 +264,7 @@ void _spendFrom2P2shAddressAndOneMultiSigP2shAddress() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder instance (b)
-  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, int sighash) async {
+  final tr = await builder.buildTransactionAsync((trDigest, utxo, publicKey, int sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
 
@@ -377,7 +377,7 @@ void _spendFromNestedSegwitP2WPKHInP2SH() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder instance (builder)
-  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+  final tr = await builder.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == childKey1PublicKey.toHex()) {
@@ -497,7 +497,7 @@ void _spendFromSegwitP2WPKHAddress() async {
       ]);
 
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder instance (builder)
-  final tr = await builder.buildTransaction((trDigest, utxo, publicKey, int sighash) async {
+  final tr = await builder.buildTransactionAsync((trDigest, utxo, publicKey, int sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (publicKey == childKey1PublicKey.toHex()) {

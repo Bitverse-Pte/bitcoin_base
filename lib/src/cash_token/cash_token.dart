@@ -1,26 +1,27 @@
-/// MIT License
-/// Copyright (c) Jason Dreyzehner
-/// https://github.com/bitauth/libauth?tab=MIT-1-ov-file#readme
-///
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
+// MIT License
+// Copyright (c) Jason Dreyzehner
+// https://github.com/bitauth/libauth?tab=MIT-1-ov-file#readme
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 
-/// The above copyright notice and this permission notice shall be included in all
-/// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-/// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 import 'dart:typed_data';
+import 'package:bitcoin_base/src/exception/exception.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 
 /// The CashTokenCapability class represents different capabilities associated with a Cash Token.
@@ -62,7 +63,8 @@ class CashTokenCapability {
       final int intCapability = _getCapability(bitfield);
       return values.firstWhere((element) => element.value == intCapability);
     } on StateError {
-      throw const MessageException("Invalid CashToken NFT Capability");
+      throw const BitcoinBasePluginException(
+          "Invalid CashToken NFT Capability");
     }
   }
 
@@ -71,7 +73,8 @@ class CashTokenCapability {
     try {
       return values.firstWhere((element) => element.name == name);
     } on StateError {
-      throw const MessageException("Invalid CashToken NFT Capability Name");
+      throw const BitcoinBasePluginException(
+          "Invalid CashToken NFT Capability Name");
     }
   }
 
@@ -270,29 +273,30 @@ class CashToken {
       List<int>? commitment,
       required int bitfield}) {
     if (!CashTokenUtils.isValidBitfield(bitfield)) {
-      throw const MessageException("Invalid bitfield");
+      throw const BitcoinBasePluginException("Invalid bitfield");
     }
     if (CashTokenUtils.hasAmount(bitfield) && amount == null) {
-      throw const MessageException(
+      throw const BitcoinBasePluginException(
           "Invalid cash token: the bitfield indicates an amount, but the amount is null.");
     }
     if (amount != null) {
       if (amount < BigInt.zero || amount > CashTokenUtils.maxTokenAmount) {
-        throw const MessageException(
+        throw const BitcoinBasePluginException(
             "Invalid amount. Amount must be between zero and 99.");
       }
     }
     if (!StringUtils.isHexBytes(category)) {
-      throw const MessageException("Invalid category hexadecimal bytes.");
+      throw const BitcoinBasePluginException(
+          "Invalid category hexadecimal bytes.");
     }
     final toBytes = BytesUtils.fromHexString(category);
     if (toBytes.length != CashTokenUtils.idBytesLength) {
-      throw const MessageException(
+      throw const BitcoinBasePluginException(
           "Invalid category. The category should consist of 32 bytes.");
     }
     if (CashTokenUtils.hasCommitmentLength(bitfield) &&
         (commitment == null || commitment.isEmpty)) {
-      throw const MessageException(
+      throw const BitcoinBasePluginException(
           "Invalid cash token: the bitfield indicates an commitment, but the commitment is null or empty.");
     }
     return CashToken.noValidate(
@@ -304,7 +308,7 @@ class CashToken {
   static Tuple<CashToken?, int> fromRaw(List<int> scriptBytes) {
     if (scriptBytes.isEmpty ||
         scriptBytes[0] != CashTokenUtils.cashTokenPrefix) {
-      return Tuple(null, 0);
+      return const Tuple(null, 0);
     }
     int cursor = 1;
     List<int> id =
@@ -332,7 +336,7 @@ class CashToken {
         amount < BigInt.zero ||
         amount > CashTokenUtils.maxTokenAmount ||
         CashTokenUtils.hasCommitmentLength(bitfield) && commitment.isEmpty) {
-      throw const MessageException('Invalid cash token');
+      throw const BitcoinBasePluginException('Invalid cash token');
     }
     return Tuple(
         CashToken(

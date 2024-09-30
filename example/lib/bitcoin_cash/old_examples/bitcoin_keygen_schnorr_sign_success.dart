@@ -242,7 +242,7 @@ Future<void> _createP2TRRawTransaction() async {
   /// utxo  infos with owner details
   /// trDigest transaction digest of current UTXO (must be sign with correct privateKey)
   /// Build the transaction by invoking the buildTransaction method on the BitcoinTransactionBuilder
-  final tr = await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+  final tr = await transactionBuilder.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     /// For each input in the transaction, locate the corresponding private key
     /// and sign the transaction digest to construct the unlocking script.
     if (utxo.utxo.isP2tr()) {

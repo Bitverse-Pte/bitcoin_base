@@ -1,7 +1,5 @@
-/// UtxoAddressDetails represents ownership details associated with a Bitcoin unspent transaction output (UTXO).
-/// It includes information such as the public key, Bitcoin address, and multi-signature address (if applicable)
-/// of the UTXO owner.
 import 'package:bitcoin_base/bitcoin_base.dart';
+import 'package:bitcoin_base/src/exception/exception.dart';
 
 abstract class UTXO {
   BitcoinUtxo toUtxo(BitcoinAddressType addressType);
@@ -50,11 +48,11 @@ class UtxoWithAddress {
 
   ECPublic public() {
     if (isMultiSig()) {
-      throw ArgumentError(
+      throw const BitcoinBasePluginException(
           "Cannot access public key in multi-signature address");
     }
     if (ownerDetails._publicKey == null) {
-      throw ArgumentError(
+      throw const BitcoinBasePluginException(
           "Cannot access public key in watch only address; use UtxoAddressDetails constractor instead `UtxoAddressDetails.watchOnly`");
     }
     return ECPublic.fromHex(ownerDetails._publicKey!);
@@ -66,7 +64,7 @@ class UtxoWithAddress {
 
   MultiSignatureAddress get multiSigAddress => isMultiSig()
       ? ownerDetails._multiSigAddress!
-      : throw ArgumentError(
+      : throw const BitcoinBasePluginException(
           "The address is not associated with a multi-signature setup");
 }
 

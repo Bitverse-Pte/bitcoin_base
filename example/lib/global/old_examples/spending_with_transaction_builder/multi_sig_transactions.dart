@@ -3,7 +3,6 @@
 
 import 'package:bitcoin_base/bitcoin_base.dart';
 
-import 'package:blockchain_utils/bip/mnemonic/mnemonic.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:example/services_examples/explorer_service/explorer_service.dart';
 
@@ -235,7 +234,7 @@ void main() async {
   // This method sends you the public key for each UTXO,
   // allowing you to sign the desired input with the associated private key
   final transaction =
-      await transactionBuilder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+      await transactionBuilder.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     late ECPrivate key;
 
     // ok we have the public key of the current UTXO and we use some conditions to find private  key and sign transaction

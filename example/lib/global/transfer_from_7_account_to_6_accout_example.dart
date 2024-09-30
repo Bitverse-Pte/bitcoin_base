@@ -152,7 +152,7 @@ void main() async {
 
   /// create transaction and sign it
   final transaction =
-      await builder.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+      await builder.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     if (utxo.utxo.isP2tr()) {
       return privateKey.signTapRoot(trDigest, sighash: sighash);
     }

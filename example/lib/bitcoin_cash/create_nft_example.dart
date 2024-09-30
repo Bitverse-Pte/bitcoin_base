@@ -1,5 +1,5 @@
 import 'package:bitcoin_base/bitcoin_base.dart';
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:example/services_examples/electrum/electrum_websocket_service.dart';
 
 /// please make sure read this before create transaction on mainnet
@@ -107,7 +107,7 @@ void main() async {
     utxos: utxos,
   );
   final transaaction =
-      await bchTransaction.buildTransaction((trDigest, utxo, publicKey, sighash) async {
+      await bchTransaction.buildTransactionAsync((trDigest, utxo, publicKey, sighash) async {
     return privateKey.signInput(trDigest, sigHash: sighash);
   });
 
