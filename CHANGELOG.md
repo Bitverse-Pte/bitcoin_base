@@ -1,3 +1,17 @@
+## 4.9.1
+
+* Resolved issue with transaction deserialization (Issue #9)
+
+## 4.9.0
+
+* Correct Bitcoin address network configuration.
+* Resolve issue with Electrum fee estimation results.
+
+
+## 4.8.0
+
+* Update dependencies
+
 ## 4.7.0
 
 * Update dependencies
